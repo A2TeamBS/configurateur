@@ -69,7 +69,7 @@ document.querySelectorAll('.color3').forEach(square => {
 window.onload = function() {
     const savedColor1 = localStorage.getItem('selectedColor1');
     const savedColor2 = localStorage.getItem('selectedColor2');
-    const savedColor3 = localStorage.getItem('selectedColwxor3');
+    const savedColor3 = localStorage.getItem('selectedColor3');
     if (savedColor1) {
         document.querySelector('.div-block-3').style.backgroundColor = savedColor1;
     }
