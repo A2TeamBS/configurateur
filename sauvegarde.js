@@ -1,4 +1,3 @@
-// Fonction pour changer la couleur du carré en haut
 function changeColor1(color) {
     try {
         const topSquare3 = document.querySelector('.div-block-3');
@@ -7,10 +6,10 @@ function changeColor1(color) {
             localStorage.setItem('selectedColor1', color);
             console.log("1 : good");
         } else {
-            console.error("Le carré du haut n'a pas été trouvé.");
+            console.error("up square not found.");
         }
     } catch (error) {
-        console.error("Erreur lors du changement de 1ere couleur :", error);
+        console.error("Error during 1st color setting :", error);
     }
 }
 
@@ -22,10 +21,10 @@ function changeColor2(color) {
             localStorage.setItem('selectedColor2', color);
             console.log("2 : good");
         } else {
-            console.error("Le carré du milieu n'a pas été trouvé.");
+            console.error("middle square not found.");
         }
     } catch (error) {
-        console.error("Erreur lors du changement de 2eme couleur :", error);
+        console.error("Error during 2nd color setting :", error);
     }
 }
 
@@ -37,10 +36,10 @@ function changeColor3(color) {
             localStorage.setItem('selectedColor3', color);
             console.log("3 : good");
         } else {
-            console.error("Le carré du bas n'a pas été trouvé.");
+            console.error("low square not found.");
         }
     } catch (error) {
-        console.error("Erreur lors du changement de 3eme couleur :", error);
+        console.error("Error during 3nd color setting :", error);
     }
 }
 
@@ -65,7 +64,39 @@ document.querySelectorAll('.color3').forEach(square => {
     });
 });
 
-// Au chargement de la page, récupérer la couleur sauvegardée et l'appliquer
+function sendColorsToMake() {
+    const selectedColor1 = localStorage.getItem('selectedColor1');
+    const selectedColor2 = localStorage.getItem('selectedColor2');
+    const selectedColor3 = localStorage.getItem('selectedColor3');
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+
+    const webhookURL = 'https://hook.eu2.make.com/3eyq9bbvpt7m3ybg4rtqfslk6q6pqtb3';
+
+    const data = {
+        color1: selectedColor1,
+        color2: selectedColor2,
+        color3: selectedColor3,
+        name: name,
+        email: email
+    };
+
+    fetch(webhookURL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log('Data correctly send to make :', result);
+    })
+    .catch(error => {
+        console.error('Error during data send to make:', error);
+    });
+}
+
 window.onload = function() {
     const savedColor1 = localStorage.getItem('selectedColor1');
     const savedColor2 = localStorage.getItem('selectedColor2');
@@ -81,3 +112,14 @@ window.onload = function() {
     }
 };
 
+document.getElementById('email-form').addEventListener('submit', function(event) {
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.target.style.display !== 'none') {
+                sendColorsToMake();
+                observer.disconnect();
+            }
+        });
+    });
+    observer.observe(document.getElementById('form-success'), { attributes: true, attributeFilter: ['style'] });
+});
