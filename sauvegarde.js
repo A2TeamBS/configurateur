@@ -1,3 +1,4 @@
+// Function to change the color of the top square
 function changeColor1(color) {
     try {
         const topSquare3 = document.querySelector('.div-block-3');
@@ -5,11 +6,12 @@ function changeColor1(color) {
             topSquare3.style.backgroundColor = color;
             localStorage.setItem('selectedColor1', color);
             console.log("1 : good");
+            updateTotalPrice();
         } else {
-            console.error("up square not found.");
+            console.error("Le carré du haut n'a pas été trouvé.");
         }
     } catch (error) {
-        console.error("Error during 1st color setting :", error);
+        console.error("Erreur lors du changement de 1ere couleur :", error);
     }
 }
 
@@ -20,11 +22,12 @@ function changeColor2(color) {
             topSquare4.style.backgroundColor = color;
             localStorage.setItem('selectedColor2', color);
             console.log("2 : good");
+            updateTotalPrice();
         } else {
-            console.error("middle square not found.");
+            console.error("Le carré du milieu n'a pas été trouvé.");
         }
     } catch (error) {
-        console.error("Error during 2nd color setting :", error);
+        console.error("Erreur lors du changement de 2eme couleur :", error);
     }
 }
 
@@ -35,11 +38,12 @@ function changeColor3(color) {
             topSquare5.style.backgroundColor = color;
             localStorage.setItem('selectedColor3', color);
             console.log("3 : good");
+            updateTotalPrice();
         } else {
-            console.error("low square not found.");
+            console.error("Le carré du bas n'a pas été trouvé.");
         }
     } catch (error) {
-        console.error("Error during 3nd color setting :", error);
+        console.error("Erreur lors du changement de 3eme couleur :", error);
     }
 }
 
@@ -63,6 +67,31 @@ document.querySelectorAll('.color3').forEach(square => {
         changeColor3(color);
     });
 });
+
+function updateTotalPrice() {
+    const colorPrices = {
+        'rgb(0, 255, 0)': 5,
+        'rgb(255, 0, 0)': 10,
+        'rgb(0, 0, 255)': 15
+    };
+
+    const selectedColor1 = localStorage.getItem('selectedColor1');
+    const selectedColor2 = localStorage.getItem('selectedColor2');
+    const selectedColor3 = localStorage.getItem('selectedColor3');
+
+    let totalPrice = 0;
+    if (selectedColor1 && colorPrices[selectedColor1]) {
+        totalPrice += colorPrices[selectedColor1];
+    }
+    if (selectedColor2 && colorPrices[selectedColor2]) {
+        totalPrice += colorPrices[selectedColor2];
+    }
+    if (selectedColor3 && colorPrices[selectedColor3]) {
+        totalPrice += colorPrices[selectedColor3];
+    }
+
+    document.getElementById('total-price').textContent = totalPrice;
+}
 
 function sendColorsToMake() {
     const selectedColor1 = localStorage.getItem('selectedColor1');
@@ -90,10 +119,10 @@ function sendColorsToMake() {
     })
     .then(response => response.json())
     .then(result => {
-        console.log('Data correctly send to make :', result);
+        console.log('Data successfully sent to Make:', result);
     })
     .catch(error => {
-        console.error('Error during data send to make:', error);
+        console.error('Error sending data to Make:', error);
     });
 }
 
@@ -110,6 +139,7 @@ window.onload = function() {
     if (savedColor3) {
         document.querySelector('.div-block-5').style.backgroundColor = savedColor3;
     }
+    updateTotalPrice();
 };
 
 document.getElementById('email-form').addEventListener('submit', function(event) {
@@ -121,5 +151,6 @@ document.getElementById('email-form').addEventListener('submit', function(event)
             }
         });
     });
+
     observer.observe(document.getElementById('form-success'), { attributes: true, attributeFilter: ['style'] });
 });
